@@ -47,6 +47,7 @@
 
 ;; Returns a GLYPH that best fits the given glyph (is never NIL)
 (defgeneric glyph (codepoint font-chain))
+
 ;; Returns a FONT that best fits the given glyph (or NIL if not covered)
 (defgeneric select-font (codepoint font-chain))
 
@@ -77,7 +78,16 @@
   line-spacing)
 
 (defclass layouter ()
-  ())
+  (;; The font chain to use
+   font-chain
+   ;; The layout parameters to use
+   layout
+   ;; The text to layout
+   text
+   ;; The list of markups for the text
+   markup
+   ;; The dimensions of the text box
+   width height))
 
 ;; Computes a FONT-CHAIN based on the list of offered fonts, with optimised font selection
 ;; Earlier fonts in the sequence take precedence, allowing the user manual control
@@ -100,4 +110,11 @@
 (define-markup size size)
 (define-markup font font)
 
-(defgeneric layout (layouter layout text markup width height emitter))
+;; (lambda (glyph x y size markups) ...)
+(defgeneric layout (layouter emitter))
+
+;; (lambda (x y) ...)
+(defgeneric cursor (layouter index emitter))
+
+;; (lambda (x y w h) ...)
+(defgeneric selection (layouter start end emitter))
